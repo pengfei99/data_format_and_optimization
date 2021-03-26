@@ -109,8 +109,6 @@ if __name__ == "__main__":
         .config("spark.kubernetes.authenticate.driver.serviceAccountName", os.environ['KUBERNETES_SERVICE_ACCOUNT']) \
         .config("spark.executor.instances", "5") \
         .config("spark.kubernetes.namespace", os.environ['KUBERNETES_NAMESPACE']) \
-        .config("spark.eventLog.enabled", "true") \
-        .config("spark.eventLog.dir", "s3a://" + event_log_path) \
         .config("spark.jars.packages", "org.apache.spark:spark-avro_2.12:3.0.1") \
         .getOrCreate()
 
