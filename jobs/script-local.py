@@ -53,19 +53,14 @@ def get_op(op):
 
 
 def read(fmt, spark):
-    json_data_path = "s3a://pengfei/sspcloud-demo/data_format/netflix.json"
-    parquet_data_path = "s3a://pengfei/sspcloud-demo/data_format/netflix.parquet"
-    avro_data_path = "s3a://pengfei/sspcloud-demo/data_format/netflix.avro"
-    orc_data_path = "s3a://pengfei/sspcloud-demo/data_format/netflix.orc"
-    csv_data_path = "s3a://pengfei/sspcloud-demo/data_format/netflix.csv"
     if fmt == "json":
-        sdf = spark.read.option("header", "true").json(json_data_path)
+        sdf = spark.read.option("header", "true").json("netflix.json")
     elif fmt == "csv":
-        sdf = spark.read.option("header", "true").csv(csv_data_path)
+        sdf = spark.read.option("header", "true").csv("netflix.csv")
     elif fmt == "avro":
-        sdf = spark.read.format("avro").option("header", "true").load(avro_data_path)
+        sdf = spark.read.format("avro").option("header", "true").load("netflix.avro")
     elif fmt == "parquet":
-        sdf = spark.read.option("header", "true").parquet(parquet_data_path)
+        sdf = spark.read.option("header", "true").parquet("netflix.parquet")
     return sdf
 
 
@@ -99,24 +94,12 @@ if __name__ == "__main__":
     parser.add_argument("fmt", type=str)
     parser.add_argument("op", type=str)
     args = parser.parse_args()
-    endpoint = "https://" + os.environ['AWS_S3_ENDPOINT']
-    fs = s3fs.S3FileSystem(client_kwargs={'endpoint_url': endpoint})
-    fs.info('pengfei/pengfei_test')
 
-    spark = SparkSession.builder.master("k8s://https://kubernetes.default.svc:443").appName("Evaluate data format") \
-        .config("spark.kubernetes.container.image", "inseefrlab/jupyter-datascience:master") \
-        .config("spark.kubernetes.authenticate.driver.serviceAccountName", os.environ['KUBERNETES_SERVICE_ACCOUNT']) \
-        .config("spark.executor.instances", "5") \
-        .config("spark.kubernetes.namespace", os.environ['KUBERNETES_NAMESPACE']) \
-        .config("spark.eventLog.enabled", "true") \
-        .config("spark.eventLog.dir", "s3a://" + event_log_path) \
-        .config("spark.jars.packages", "org.apache.spark:spark-avro_2.12:3.0.1") \
-        .getOrCreate()
-
+    spark = SparkSession.builder.master("local[*]").getOrCreate()
     mute_spark_logs(spark.sparkContext)
     sdf = read("csv", spark)
     sdf.show(5)
     start = time.time()
-    write(sdf, args.fmt)
+    write(sdf,args.fmt)
     # get_op(args.op)(sdf)
     print("{}, {}, {}".format(args.fmt, args.op, time.time() - start))
