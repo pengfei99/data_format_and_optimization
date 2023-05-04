@@ -9,7 +9,7 @@ Based on different use cases, we divide data formats into three categories:
 visit the [archive file format](https://en.wikipedia.org/wiki/Archive_file))
 
 ## Short term or ephemeral storage data format
-- Arrow (IPC, Feather)
+- Arrow (IPC, Feather) : More details can be found [here](./Arrow)
 
 
 ## Long term storage data format: 
