@@ -20,6 +20,29 @@ visit the [archive file format](https://en.wikipedia.org/wiki/Archive_file))
 - parquet (structured) More details can be found [here](https://github.com/pengfei99/ParquetDataFormat.git)
 - [lance](https://github.com/eto-ai/lance) (To be tested)
 
+### Basic data format properties
+
+Normally, when we evaluate a data format, we use the following basic properties. 
+
+- Human Readable
+- Compressible
+- Splittable/Partitioning
+- Complex data structure
+- Schema evolution
+- Columnar(for better compression and operation performance)
+- Framework support
+
+| Property               | CSV   | Json  | Parquet | Avro | SAS |
+|------------------------|-------|-------|---------|------|-----|
+| Human Readable         | YES   | YES   | NO      | NO   | NO  |
+| Compressible           | YES   | YES   | YES     | YES  | YES |
+| Splittable             | YES*  | YES*  | YES     | YES  | YES |
+| Complex data structure | NO    | YES   | YES     | YES  | YES |
+| Schema evolution       | NO    | NO    | YES     | YES  | YES |
+| Columnar               | NO    | NO    | YES     | NO   | NO  |
+| Framework support      | YES++ | YES++ | YES+    | YES+ | YES |
+| Metadata support       | NO    | NO    | YES++   | YES  | YES |
+
 We evaluate the data formats by measuring the latency of the following data operations :
 
 - Disk usage
@@ -27,3 +50,5 @@ We evaluate the data formats by measuring the latency of the following data oper
 - Random data lookup
 - Filtering/GroupBy(column-wise)
 - Distinct(row-wise)
+
+
